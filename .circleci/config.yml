@@ -45,10 +45,9 @@ jobs:
           paths:
             - udagram
   # deploy step will run only after manual approval
-  deploy-s3:
+  deploy-frontend:
     docker:
-      - image: "cimg/base:stable"
-      # more setup needed for aws, node, elastic beanstalk
+      - image: cimg/base:stable
     steps:
       - node/install:
           node-version: '14.15'
@@ -62,11 +61,39 @@ jobs:
           from: udagram/udagram-frontend/www/
           to: s3://udacity-fullsnack-js-4
           arguments: --recursive
+  deploy-api:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - node/install:
+          node-version: '14.15'
+      - checkout
+      - eb/setup
+      - run:
+          name: Setup Env Props
+          command: |
+            eb setenv AWS_BUCKET=udacity-fullsnack-js-4
+            eb setenv AWS_PROFILE=udacity
+            eb setenv AWS_REGION=$AWS_DEFAULT_REGION
+            eb setenv JWT_SECRET=$JWT_SECRET
+            eb setenv POSTGRES_DB=postgres
+            eb setenv POSTGRES_HOST=udacity-fullsnack-js-4.c08vqqkvqodl.us-east-1.rds.amazonaws.com
+            eb setenv POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+            eb setenv POSTGRES_USERNAME=$POSTGRES_USERNAME
+            eb setenv URL=http://udacity-fullsnack-js-4.s3-website-us-east-1.amazonaws.com
+      - run:
+          name: Deploy
+          command: |
+            cd ~/project/udagram/udagram-api
+            ls
+            eb create udacity-fullsnack-js-4
+            eb deploy udacity-fullsnack-js-4
+            eb status
 workflows:
   udagram:
     jobs:
       - build
-      - hold-s3:
+      - hold-frontend:
           filters:
             branches:
               only:
@@ -74,7 +101,7 @@ workflows:
           type: approval
           requires:
             - build
-      - hold-eb:
+      - hold-api:
           filters:
             branches:
               only:
@@ -82,15 +109,9 @@ workflows:
           type: approval
           requires:
             - build
-      - deploy-s3:
+      - deploy-frontend:
           requires:
-            - hold-s3
-      - eb/deploy:
+            - hold-frontend
+      - deploy-api:
           requires:
-            - hold-eb
-          app-dir: ~/project-workspace/udagram/udagram-api
-          environment-name: udacity-fullsnack-js-4
-          label: v<<pipeline.number>>
-          pre-steps:
-            - attach_workspace:
-                at: ~/project-workspace
+            - hold-api
