@@ -41,7 +41,7 @@ jobs:
           command: |
             npm run api:build
   # deploy step will run only after manual approval
-  s3/deploy:
+  deploy-s3:
     docker:
       - image: "cimg/base:stable"
       # more setup needed for aws, node, elastic beanstalk
@@ -49,6 +49,9 @@ jobs:
       - node/install:
           node-version: '14.15'
       - checkout
+      - run: |
+          pwd
+          ls
       - aws-s3/copy:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-region: AWS_DEFAULT_REGION
@@ -76,12 +79,12 @@ workflows:
           type: approval
           requires:
             - build
-      - s3/deploy:
+      - deploy-s3:
           requires:
             - hold-s3
       - eb/deploy:
           requires:
             - hold-eb
-          app-dir: ~/project/udagram/udagram-api
+          app-dir: udagram/udagram-api
           environment-name: udacity-fullsnack-js-4
           label: v<<pipeline.number>>
