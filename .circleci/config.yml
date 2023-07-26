@@ -52,6 +52,7 @@ jobs:
       - run: |
           pwd
           ls
+          cd udagram/udagram-frontend && ls
       - aws-s3/copy:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-region: AWS_DEFAULT_REGION
