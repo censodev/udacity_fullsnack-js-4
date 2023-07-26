@@ -81,7 +81,7 @@ jobs:
           name: Deploy
           working_directory: ~/project/udagram/udagram-api
           command: |
-            eb deploy udacity-fullsnack-js-4
+            eb deploy --staged udacity-fullsnack-js-4
             eb status
 workflows:
   udagram:
