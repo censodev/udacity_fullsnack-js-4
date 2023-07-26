@@ -5,7 +5,7 @@
 export const environment = {
   production: true,
   appName: 'Udagram',
-  apiHost: 'http://localhost:8080/api/v0',
+  apiHost: 'http://udacity-fullsnack-js-4.eba-pgr9mqsk.us-east-1.elasticbeanstalk.com:8080/api/v0',
 };
 
 /*
