@@ -71,6 +71,7 @@ jobs:
       - eb/setup
       - run:
           name: Setup Env Props
+          working_directory: ~/project/udagram/udagram-api
           command: |
             eb setenv AWS_BUCKET=udacity-fullsnack-js-4
             eb setenv AWS_PROFILE=udacity
@@ -83,9 +84,8 @@ jobs:
             eb setenv URL=http://udacity-fullsnack-js-4.s3-website-us-east-1.amazonaws.com
       - run:
           name: Deploy
+          working_directory: ~/project/udagram/udagram-api
           command: |
-            cd ~/project/udagram/udagram-api
-            ls
             eb create udacity-fullsnack-js-4
             eb deploy udacity-fullsnack-js-4
             eb status
