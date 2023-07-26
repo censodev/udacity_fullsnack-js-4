@@ -57,11 +57,6 @@ jobs:
           from: ~/project/udagram/udagram-frontend/www/
           to: s3://udacity-fullsnack-js-4
           arguments: --recursive
-      - eb/deploy:
-          app-dir: ~/project/udagram/udagram-api
-          environment-name: udacity-fullsnack-js-4
-          label: v<<pipeline.number>>
-
 workflows:
   udagram:
     jobs:
@@ -77,3 +72,9 @@ workflows:
       - deploy:
           requires:
             - hold
+      - eb/deploy:
+          requires:
+            - hold
+          app-dir: ~/project/udagram/udagram-api
+          environment-name: udacity-fullsnack-js-4
+          label: v<<pipeline.number>>
