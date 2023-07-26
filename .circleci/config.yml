@@ -41,27 +41,26 @@ jobs:
           command: |
             npm run api:build
   # deploy step will run only after manual approval
-  deploy:
+  s3/deploy:
     docker:
       - image: "cimg/base:stable"
       # more setup needed for aws, node, elastic beanstalk
     steps:
       - node/install:
           node-version: '14.15'
-      - eb/setup
       - checkout
       - aws-s3/copy:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-region: AWS_DEFAULT_REGION
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          from: ~/project/udagram/udagram-frontend/www/
+          from: udagram/udagram-frontend/www/
           to: s3://udacity-fullsnack-js-4
           arguments: --recursive
 workflows:
   udagram:
     jobs:
       - build
-      - hold:
+      - hold-s3:
           filters:
             branches:
               only:
@@ -69,12 +68,20 @@ workflows:
           type: approval
           requires:
             - build
-      - deploy:
+      - hold-eb:
+          filters:
+            branches:
+              only:
+                - master
+          type: approval
           requires:
-            - hold
+            - build
+      - s3/deploy:
+          requires:
+            - hold-s3
       - eb/deploy:
           requires:
-            - hold
+            - hold-eb
           app-dir: ~/project/udagram/udagram-api
           environment-name: udacity-fullsnack-js-4
           label: v<<pipeline.number>>
