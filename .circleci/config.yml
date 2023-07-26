@@ -68,6 +68,8 @@ jobs:
       - node/install:
           node-version: '14.15'
       - checkout
+      - attach_workspace:
+          at: ~/project
       - eb/setup
       - run:
           name: Setup Env
