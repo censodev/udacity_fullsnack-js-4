@@ -55,10 +55,6 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/project
-      - run: |
-          pwd
-          ls
-          cd udagram/udagram-frontend && ls
       - aws-s3/copy:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-region: AWS_DEFAULT_REGION
@@ -92,9 +88,9 @@ workflows:
       - eb/deploy:
           requires:
             - hold-eb
-          app-dir: udagram/udagram-api
+          app-dir: ~/project-workspace/udagram/udagram-api
           environment-name: udacity-fullsnack-js-4
           label: v<<pipeline.number>>
           pre-steps:
             - attach_workspace:
-                at: ~/project
+                at: ~/project-workspace
