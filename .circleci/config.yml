@@ -40,6 +40,10 @@ jobs:
           name: API Build
           command: |
             npm run api:build
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - udagram
   # deploy step will run only after manual approval
   deploy-s3:
     docker:
@@ -49,6 +53,8 @@ jobs:
       - node/install:
           node-version: '14.15'
       - checkout
+      - attach_workspace:
+          at: ~/project
       - run: |
           pwd
           ls
@@ -89,3 +95,6 @@ workflows:
           app-dir: udagram/udagram-api
           environment-name: udacity-fullsnack-js-4
           label: v<<pipeline.number>>
+          pre-steps:
+            - attach_workspace:
+                at: ~/project
