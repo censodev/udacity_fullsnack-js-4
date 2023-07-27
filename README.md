@@ -16,6 +16,7 @@ http://udacity-fullsnack-js-4.s3-website-us-east-1.amazonaws.com
 ![](./screenshots/cicd-2.png)
 ![](./screenshots/cicd-3.png)
 ![](./screenshots/cicd-4.png)
+![](./screenshots/cicd-5.png)
 
 ### AWS RDS
 
