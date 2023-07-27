@@ -73,8 +73,7 @@ jobs:
       - eb/setup
       - run:
           name: Deploy
-          working_directory: ~/project/udagram/udagram-api
-          command: ./bin/deploy.sh
+          command: npm run api:deploy
 workflows:
   udagram:
     jobs:
